@@ -1,3 +1,9 @@
 <ion-content [fullscreen]="true">
-  
+  <ion-slides [options]="slidesOptions">
+      <ion-slide>
+          <ion-button (click)="scan()" expand="full" fill="outline" shape="round">
+              Scan QR Code
+          </ion-button>
+      </ion-slide>
+  </ion-slides>
 </ion-content>

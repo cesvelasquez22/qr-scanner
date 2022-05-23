@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { BarcodeScanner } from '@awesome-cordova-plugins/barcode-scanner/ngx';
 
 @Component({
   selector: 'app-tab1',
@@ -6,7 +7,15 @@ import { Component } from '@angular/core';
   styleUrls: ['tab1.page.scss'],
 })
 export class Tab1Page {
-  constructor() {}
+  slidesOptions = {
+    allowSlidePrev: false,
+    allowSlideNext: false,
+  };
+  constructor(private barcodeScanner: BarcodeScanner) {}
+
+  ionViewWillEnter() {
+    this.scan();
+  }
 
   ionViewDidEnter() {
     console.log('Tab 1 ionViewDidEnter');
@@ -18,5 +27,13 @@ export class Tab1Page {
 
   ionViewDidLeave() {
     console.log('Tab 1 ionViewDidLeave');
+  }
+
+  scan() {
+    this.barcodeScanner.scan().then(barcodeData => {
+      console.log('Barcode data', barcodeData);
+     }).catch(err => {
+         console.log('Error', err);
+     });
   }
 }

@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { BarcodeScanner } from '@awesome-cordova-plugins/barcode-scanner/ngx';
+import { LocalDataService } from 'src/app/services/local-data.service';
 
 @Component({
   selector: 'app-tab1',
@@ -11,7 +12,10 @@ export class Tab1Page {
     allowSlidePrev: false,
     allowSlideNext: false,
   };
-  constructor(private barcodeScanner: BarcodeScanner) {}
+  constructor(
+    private barcodeScanner: BarcodeScanner,
+    private localDataService: LocalDataService
+  ) {}
 
   ionViewWillEnter() {
     this.scan();
@@ -30,10 +34,17 @@ export class Tab1Page {
   }
 
   scan() {
-    this.barcodeScanner.scan().then(barcodeData => {
-      console.log('Barcode data', barcodeData);
-     }).catch(err => {
-         console.log('Error', err);
-     });
+    this.barcodeScanner
+      .scan()
+      .then((barcodeData) => {
+        console.log('Barcode data', barcodeData);
+        if (!barcodeData.cancelled) {
+          this.localDataService.saveQrLog(barcodeData.format, barcodeData.text);
+        }
+      })
+      .catch((err) => {
+        console.log('Error', err);
+        this.localDataService.saveQrLog('QRCode', 'https://ionicframework.com/');
+      });
   }
 }

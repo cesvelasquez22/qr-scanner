@@ -22,15 +22,15 @@ export class Tab1Page {
   }
 
   ionViewDidEnter() {
-    console.log('Tab 1 ionViewDidEnter');
+    // console.log('Tab 1 ionViewDidEnter');
   }
 
   ionViewWillLeave() {
-    console.log('Tab 1 ionViewWillLeave');
+    // console.log('Tab 1 ionViewWillLeave');
   }
 
   ionViewDidLeave() {
-    console.log('Tab 1 ionViewDidLeave');
+    // console.log('Tab 1 ionViewDidLeave');
   }
 
   scan() {

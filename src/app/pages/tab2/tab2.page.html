@@ -14,7 +14,7 @@
 
 <ion-content [fullscreen]="true">
   <ion-list>
-    <ion-item *ngFor="let qrLog of localData.qrLogs" (click)="onOpenLog()" detail>
+    <ion-item *ngFor="let qrLog of localData.qrLogs" (click)="onOpenLog(qrLog)" detail>
       <ion-icon slot="start" [name]="qrLog.icon" color="primary"></ion-icon>
       <ion-label>
         <h2>{{ qrLog.text }}</h2>

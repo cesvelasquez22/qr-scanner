@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { QrLog } from 'src/app/models/qr-log.model';
 import { LocalDataService } from 'src/app/services/local-data.service';
 
 @Component({
@@ -12,6 +13,8 @@ export class Tab2Page {
 
   onSendEmail() {}
 
-  onOpenLog() {}
+  onOpenLog(qrLog: QrLog) {
+    this.localData.openQrLog(qrLog);
+  }
 
 }

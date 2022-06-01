@@ -24,7 +24,7 @@ export class QrLog {
         break;
       case 'geo:':
         this.type = 'geo';
-        this.icon = 'location-outline';
+        this.icon = 'location';
         break;
       default:
         this.type = 'none';

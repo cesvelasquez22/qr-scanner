@@ -55,6 +55,11 @@ export class LocalDataService {
         this.openIab(qrLog.text);
         break;
 
+        case 'geo':
+        // Open in Map
+        this.navController.navigateForward(`/tabs/tab2/map/${qrLog.text}`);
+        break;
+
       default:
         break;
     }

@@ -3,3 +3,14 @@
   width: 100%;
   background: #f6f6f4;
 }
+
+.back-container {
+  width: 100%;
+}
+
+ion-toolbar {
+  --background: none;
+  ion-back-button {
+    --color: #000000;
+  }
+}

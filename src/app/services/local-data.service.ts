@@ -4,6 +4,7 @@ import { Storage } from '@ionic/storage-angular';
 import { QrLog } from '../models/qr-log.model';
 import { InAppBrowser } from '@awesome-cordova-plugins/in-app-browser/ngx';
 import { File } from '@awesome-cordova-plugins/file/ngx';
+import { EmailComposer } from '@awesome-cordova-plugins/email-composer/ngx';
 
 @Injectable({
   providedIn: 'root',
@@ -18,7 +19,8 @@ export class LocalDataService {
     private navController: NavController,
     private iab: InAppBrowser,
     private platform: Platform,
-    private file: File
+    private file: File,
+    private emailComposer: EmailComposer
   ) {
     this.init();
   }
@@ -79,28 +81,50 @@ export class LocalDataService {
       headers,
       ...this.qrLogs.map(
         (qrLog) =>
-          `${qrLog.type}, ${qrLog.format}, ${qrLog.created}, ${qrLog.text.replace(',', ' ')}\n`
+          `${qrLog.type}, ${qrLog.format}, ${
+            qrLog.created
+          }, ${qrLog.text.replace(',', ' ')}\n`
       ),
     ];
   }
 
   private _createCsvFile(csv: string) {
-    this.file.checkFile(this.file.dataDirectory, this.CSV_FILE).then(exists => {
-      console.log('File exists', exists);
-      return this._writeCsvFile(csv);
-    }).catch(error => {
-      console.log('File does not exist', error);
-      return this.file.createFile(this.file.dataDirectory, this.CSV_FILE, false).then(() => {
-        this._writeCsvFile(csv);
-      }).catch(() => {
-        console.log('Error creating file');
+    this.file
+      .checkFile(this.file.dataDirectory, this.CSV_FILE)
+      .then((exists) => {
+        console.log('File exists', exists);
+        return this._writeCsvFile(csv);
+      })
+      .catch((error) => {
+        console.log('File does not exist', error);
+        return this.file
+          .createFile(this.file.dataDirectory, this.CSV_FILE, false)
+          .then(() => {
+            this._writeCsvFile(csv);
+          })
+          .catch(() => {
+            console.log('Error creating file');
+          });
       });
-    });
-    console.log('File created', this.file.dataDirectory + this.CSV_FILE);
   }
 
   private async _writeCsvFile(csv: string) {
-    await this.file.writeExistingFile(this.file.dataDirectory, this.CSV_FILE, csv);
+    await this.file.writeExistingFile(
+      this.file.dataDirectory,
+      this.CSV_FILE,
+      csv
+    );
+    const csvFilePath = `${this.file.dataDirectory}${this.CSV_FILE}`;
+
+    const email = {
+      to: 'ces.velasquez@hotmail.com',
+      attachments: [csvFilePath],
+      subject: 'Scan Logs',
+      body: 'How are you? Nice greetings from <strong>Scanner App</strong> Here is your Scan Logs',
+      isHtml: true,
+    };
+    // Send a text message using default options
+    this.emailComposer.open(email);
   }
 
   private openIab(url: string) {

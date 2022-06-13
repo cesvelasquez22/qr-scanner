@@ -24,6 +24,7 @@ export class QrLog {
         break;
       case 'geo:':
         this.type = 'geo';
+        this.text = this.text.split('?')[0];
         this.icon = 'location';
         break;
       default:

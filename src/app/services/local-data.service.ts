@@ -3,6 +3,7 @@ import { NavController, Platform } from '@ionic/angular';
 import { Storage } from '@ionic/storage-angular';
 import { QrLog } from '../models/qr-log.model';
 import { InAppBrowser } from '@awesome-cordova-plugins/in-app-browser/ngx';
+import { File } from '@awesome-cordova-plugins/file/ngx';
 
 @Injectable({
   providedIn: 'root',
@@ -10,12 +11,14 @@ import { InAppBrowser } from '@awesome-cordova-plugins/in-app-browser/ngx';
 export class LocalDataService {
   qrLogs: QrLog[] = [];
   private readonly KEY_QR_LOGS = 'qrLogs';
+  private readonly CSV_FILE = 'qr-logs.csv';
 
   constructor(
     private storage: Storage,
     private navController: NavController,
     private iab: InAppBrowser,
-    private platform: Platform
+    private platform: Platform,
+    private file: File
   ) {
     this.init();
   }
@@ -55,7 +58,7 @@ export class LocalDataService {
         this.openIab(qrLog.text);
         break;
 
-        case 'geo':
+      case 'geo':
         // Open in Map
         this.navController.navigateForward(`/tabs/tab2/map/${qrLog.text}`);
         break;
@@ -63,6 +66,41 @@ export class LocalDataService {
       default:
         break;
     }
+  }
+
+  sendHistoryEmail() {
+    const csv = this.parseToCSV();
+    this._createCsvFile(csv.join(''));
+  }
+
+  private parseToCSV() {
+    const headers = 'Tipo, Formato, Creado en, Texto\n';
+    return [
+      headers,
+      ...this.qrLogs.map(
+        (qrLog) =>
+          `${qrLog.type}, ${qrLog.format}, ${qrLog.created}, ${qrLog.text.replace(',', ' ')}\n`
+      ),
+    ];
+  }
+
+  private _createCsvFile(csv: string) {
+    this.file.checkFile(this.file.dataDirectory, this.CSV_FILE).then(exists => {
+      console.log('File exists', exists);
+      return this._writeCsvFile(csv);
+    }).catch(error => {
+      console.log('File does not exist', error);
+      return this.file.createFile(this.file.dataDirectory, this.CSV_FILE, false).then(() => {
+        this._writeCsvFile(csv);
+      }).catch(() => {
+        console.log('Error creating file');
+      });
+    });
+    console.log('File created', this.file.dataDirectory + this.CSV_FILE);
+  }
+
+  private async _writeCsvFile(csv: string) {
+    await this.file.writeExistingFile(this.file.dataDirectory, this.CSV_FILE, csv);
   }
 
   private openIab(url: string) {

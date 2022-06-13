@@ -15,6 +15,7 @@ import { InAppBrowser } from '@awesome-cordova-plugins/in-app-browser/ngx';
 
 // Plugins
 import { BarcodeScanner } from '@awesome-cordova-plugins/barcode-scanner/ngx';
+import { File } from '@awesome-cordova-plugins/file/ngx';
 
 @NgModule({
   declarations: [AppComponent],
@@ -27,8 +28,9 @@ import { BarcodeScanner } from '@awesome-cordova-plugins/barcode-scanner/ngx';
   ],
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    File,
     BarcodeScanner,
-    InAppBrowser
+    InAppBrowser,
   ],
   bootstrap: [AppComponent],
 })

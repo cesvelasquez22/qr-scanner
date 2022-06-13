@@ -11,7 +11,9 @@ export class Tab2Page {
 
   constructor(public localData: LocalDataService) {}
 
-  onSendEmail() {}
+  onSendEmail() {
+    this.localData.sendHistoryEmail();
+  }
 
   onOpenLog(qrLog: QrLog) {
     this.localData.openQrLog(qrLog);
